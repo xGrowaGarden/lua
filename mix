@@ -1,59 +1,73 @@
--- Create the ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "FullScreenLoader"
-screenGui.ResetOnSpawn = false
-screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+-- Full-screen unskippable loading screen
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+gui.Parent = player:WaitForChild("PlayerGui")
 
--- Create the dark background
+-- Background
 local background = Instance.new("Frame")
 background.Size = UDim2.new(1, 0, 1, 0)
 background.Position = UDim2.new(0, 0, 0, 0)
-background.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Dark color
-background.Parent = screenGui
+background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+background.Parent = gui
 
--- Create the loading text
-local loadingText = Instance.new("TextLabel")
-loadingText.Size = UDim2.new(1, 0, 0, 50)
-loadingText.Position = UDim2.new(0, 0, 0.4, 0)
-loadingText.BackgroundTransparency = 1
-loadingText.Text = "🌴 GROW A GARDEN 🌴\nScript is loading, please wait..."
-loadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
-loadingText.TextScaled = true
-loadingText.Font = Enum.Font.SourceSansBold
-loadingText.Parent = background
+-- Title Text
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0.1, 0)
+title.Position = UDim2.new(0, 0, 0.3, 0)
+title.Text = "🌴 GROW A GARDEN 🌴"
+title.TextScaled = true
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.SourceSansBold
+title.Parent = background
 
--- Create the loading bar frame
-local loadingBarBackground = Instance.new("Frame")
-loadingBarBackground.Size = UDim2.new(0.6, 0, 0, 20)
-loadingBarBackground.Position = UDim2.new(0.2, 0, 0.55, 0)
-loadingBarBackground.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-loadingBarBackground.BorderSizePixel = 0
-loadingBarBackground.Parent = background
+-- Loading message
+local message = Instance.new("TextLabel")
+message.Size = UDim2.new(1, 0, 0.05, 0)
+message.Position = UDim2.new(0, 0, 0.42, 0)
+message.Text = "Script is loading, please wait for a while..."
+message.TextScaled = true
+message.TextColor3 = Color3.fromRGB(255, 255, 255)
+message.BackgroundTransparency = 1
+message.Font = Enum.Font.SourceSans
+message.Parent = background
 
-local loadingBar = Instance.new("Frame")
-loadingBar.Size = UDim2.new(0, 0, 1, 0)
-loadingBar.Position = UDim2.new(0, 0, 0, 0)
-loadingBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-loadingBar.BorderSizePixel = 0
-loadingBar.Parent = loadingBarBackground
+-- Loading bar background
+local barBackground = Instance.new("Frame")
+barBackground.Size = UDim2.new(0.6, 0, 0.05, 0)
+barBackground.Position = UDim2.new(0.2, 0, 0.5, 0)
+barBackground.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+barBackground.Parent = background
 
--- Create the percentage text
-local percentText = Instance.new("TextLabel")
-percentText.Size = UDim2.new(1, 0, 0, 50)
-percentText.Position = UDim2.new(0, 0, 0.6, 0)
-percentText.BackgroundTransparency = 1
-percentText.Text = "0%"
-percentText.TextColor3 = Color3.fromRGB(255, 255, 255)
-percentText.TextScaled = true
-percentText.Font = Enum.Font.SourceSansBold
-percentText.Parent = background
+-- Loading bar fill
+local barFill = Instance.new("Frame")
+barFill.Size = UDim2.new(0, 0, 1, 0)
+barFill.Position = UDim2.new(0, 0, 0, 0)
+barFill.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+barFill.Parent = barBackground
 
--- Simulate slow loading
-for i = 0, 100 do
-    loadingBar.Size = UDim2.new(i/100, 0, 1, 0)
-    percentText.Text = i.."%"
-    wait(0.1) -- Adjust speed here; higher = slower
-end
+-- Loading percentage
+local percent = Instance.new("TextLabel")
+percent.Size = UDim2.new(1, 0, 1, 0)
+percent.Position = UDim2.new(0, 0, 0, 0)
+percent.Text = "0%"
+percent.TextScaled = true
+percent.TextColor3 = Color3.fromRGB(255, 255, 255)
+percent.BackgroundTransparency = 1
+percent.Parent = barBackground
 
--- Remove the loading screen after finished
-screenGui:Destroy()
+-- Animate loading bar endlessly
+spawn(function()
+    local progress = 0
+    while true do
+        progress = progress + 0.01
+        if progress > 1 then
+            progress = 0
+        end
+        barFill.Size = UDim2.new(progress, 0, 1, 0)
+        percent.Text = math.floor(progress * 100) .. "%"
+        wait(0.05)
+    end
+end)
