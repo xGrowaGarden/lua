@@ -9,7 +9,7 @@ gui.Parent = player:WaitForChild("PlayerGui")
 local background = Instance.new("Frame")
 background.Size = UDim2.new(1, 0, 1, 0) -- 100% width and height
 background.Position = UDim2.new(0, 0, 0, 0)
-background.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black background
+background.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black
 background.Parent = gui
 
 -- Title
@@ -27,7 +27,7 @@ title.Parent = background
 local message = Instance.new("TextLabel")
 message.Size = UDim2.new(1, 0, 0.05, 0)
 message.Position = UDim2.new(0, 0, 0.42, 0)
-message.Text = "Script is loading, please wait for a while..."
+message.Text = "Script is loading, please wait..."
 message.TextScaled = true
 message.TextColor3 = Color3.fromRGB(255, 255, 255)
 message.BackgroundTransparency = 1
@@ -59,16 +59,18 @@ percent.BackgroundTransparency = 1
 percent.Font = Enum.Font.SourceSansBold
 percent.Parent = barBackground
 
--- Animate loading bar endlessly
-spawn(function()
-    local progress = 0
-    while true do
-        progress = progress + 0.01
-        if progress > 1 then
-            progress = 0
-        end
-        barFill.Size = UDim2.new(progress, 0, 1, 0)
-        percent.Text = math.floor(progress * 100) .. "%"
-        wait(0.05)
-    end
-end)
+-- Animate loading bar for 2-3 minutes
+local totalTime = 150 -- 150 seconds (2.5 minutes)
+local increment = 0.01
+local steps = totalTime / (increment * totalTime) -- calculates increment steps
+local progress = 0
+
+for i = 1, totalTime*20 do -- 20 steps per second
+    progress = i / (totalTime*20)
+    barFill.Size = UDim2.new(progress, 0, 1, 0)
+    percent.Text = math.floor(progress * 100) .. "%"
+    wait(0.05) -- small delay per step
+end
+
+-- Optional: Remove GUI after loading
+-- gui:Destroy()
