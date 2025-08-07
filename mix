@@ -1,4 +1,4 @@
--- ShinOp Hub Simulation GUI (With 2-minute Loading)
+-- ShinOp Hub Simulation GUI (1-Minute Loading Version)
 
 -- Create the ScreenGui
 local screenGui = Instance.new("ScreenGui")
@@ -6,7 +6,7 @@ screenGui.Name = "ShinOpHub"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Create a Frame for the loading screen
+-- Create loading screen Frame
 local loadingFrame = Instance.new("Frame")
 loadingFrame.Size = UDim2.new(0.4,0,0.1,0)
 loadingFrame.Position = UDim2.new(0.3,0,0.45,0)
@@ -14,7 +14,7 @@ loadingFrame.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
 loadingFrame.BorderSizePixel = 0
 loadingFrame.Parent = screenGui
 
--- Create a loading label
+-- Loading Label
 local loadingLabel = Instance.new("TextLabel")
 loadingLabel.Size = UDim2.new(1,0,1,0)
 loadingLabel.BackgroundTransparency = 1
@@ -24,16 +24,14 @@ loadingLabel.TextScaled = true
 loadingLabel.TextColor3 = Color3.fromRGB(0,0,0)
 loadingLabel.Parent = loadingFrame
 
--- Simulate 2-minute loading progress
+-- Simulate 1-minute loading (60 seconds total, 0.6 seconds per 1%)
 for i = 0, 100 do
     loadingLabel.Text = "Loading... "..i.."%"
-    wait(1.2) -- 120 seconds ÷ 100 steps
+    wait(0.6)
 end
 
--- Optionally show "Loading Complete" before destroying
 loadingLabel.Text = "✅ Loading Complete!"
 wait(2)
-
 loadingFrame:Destroy()
 
 -- Create main hub frame
@@ -54,7 +52,7 @@ title.TextScaled = true
 title.TextColor3 = Color3.fromRGB(0,0,0)
 title.Parent = mainFrame
 
--- Button Data
+-- Button definitions
 local buttons = {
     {Text = "🌑 Dark Spawner Rayfield"},
     {Text = "🎲 Egg Randomizer"},
@@ -62,7 +60,7 @@ local buttons = {
     {Text = "❄️ Trade Freeze"}
 }
 
--- Create Buttons
+-- Create Buttons with logic
 for i, info in ipairs(buttons) do
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0.9,0,0.15,0)
@@ -74,7 +72,7 @@ for i, info in ipairs(buttons) do
     btn.TextColor3 = Color3.fromRGB(255,255,255)
     btn.Parent = mainFrame
 
-    -- Working callbacks
+    -- Button functionality
     btn.MouseButton1Click:Connect(function()
         if info.Text == "🌑 Dark Spawner Rayfield" then
             local part = Instance.new("Part")
@@ -84,52 +82,28 @@ for i, info in ipairs(buttons) do
             part.Anchored = true
             part.Parent = workspace
             print("Dark Spawner created.")
+
         elseif info.Text == "🎲 Egg Randomizer" then
             local eggs = {"Red Egg","Blue Egg","Golden Egg"}
             local chosen = eggs[math.random(1,#eggs)]
-
-            local eggLabel = Instance.new("TextLabel")
-            eggLabel.Size = UDim2.new(0.8,0,0.1,0)
-            eggLabel.Position = UDim2.new(0.1,0,0.85,0)
-            eggLabel.Text = "You received: "..chosen
-            eggLabel.Font = Enum.Font.GothamBold
-            eggLabel.TextScaled = true
-            eggLabel.BackgroundColor3 = Color3.fromRGB(255, 230, 230)
-            eggLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-            eggLabel.Parent = mainFrame
-
-            task.delay(3, function() eggLabel:Destroy() end)
+            local msg = Instance.new("Message", workspace)
+            msg.Text = "You received: "..chosen
+            wait(2)
+            msg:Destroy()
 
         elseif info.Text == "🧬 Pet Mutation Finder" then
             local mutations = {"Speed Boost","Glow","Mini Size"}
             local mutation = mutations[math.random(1,#mutations)]
-
-            local mutationLabel = Instance.new("TextLabel")
-            mutationLabel.Size = UDim2.new(0.8,0,0.1,0)
-            mutationLabel.Position = UDim2.new(0.1,0,0.85,0)
-            mutationLabel.Text = "Your pet mutation: "..mutation
-            mutationLabel.Font = Enum.Font.GothamBold
-            mutationLabel.TextScaled = true
-            mutationLabel.BackgroundColor3 = Color3.fromRGB(230, 255, 230)
-            mutationLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-            mutationLabel.Parent = mainFrame
-
-            task.delay(3, function() mutationLabel:Destroy() end)
+            local msg = Instance.new("Message", workspace)
+            msg.Text = "Your pet mutation: "..mutation
+            wait(2)
+            msg:Destroy()
 
         elseif info.Text == "❄️ Trade Freeze" then
-            local notice = Instance.new("TextLabel")
-            notice.Size = UDim2.new(0.8,0,0.1,0)
-            notice.Position = UDim2.new(0.1,0,0.85,0)
-            notice.Text = "Trade Frozen + Auto-Accept Enabled"
-            notice.Font = Enum.Font.GothamBold
-            notice.TextScaled = true
-            notice.BackgroundColor3 = Color3.fromRGB(200, 230, 255)
-            notice.TextColor3 = Color3.fromRGB(0, 0, 0)
-            notice.Parent = mainFrame
-
-            task.delay(3, function() notice:Destroy() end)
-
-            print("Trade system frozen. Incoming trades auto-accepted.")
+            local msg = Instance.new("Message", workspace)
+            msg.Text = "⚠️ Trade has been frozen. Auto-accept enabled."
+            wait(2)
+            msg:Destroy()
         end
     end)
 end
